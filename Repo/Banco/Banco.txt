@@ -1,0 +1,175 @@
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Schema forsoft
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema forsoft
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `forsoft` DEFAULT CHARACTER SET utf8 ;
+-- -----------------------------------------------------
+-- Schema test
+-- -----------------------------------------------------
+USE `forsoft` ;
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Aluno`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Aluno` (
+  `idAluno` INT NOT NULL AUTO_INCREMENT,
+  `Nome` VARCHAR(45) NULL,
+  `Perfil` INT NULL,
+  PRIMARY KEY (`idAluno`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Cursos`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Cursos` (
+  `idCursos` INT NOT NULL AUTO_INCREMENT,
+  `Num` INT NULL,
+  PRIMARY KEY (`idCursos`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Professor`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Professor` (
+  `idProfessor` INT NOT NULL AUTO_INCREMENT,
+  `Nome` VARCHAR(120) NULL,
+  PRIMARY KEY (`idProfessor`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Turma`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Turma` (
+  `idTurma` INT NOT NULL AUTO_INCREMENT,
+  `idCursos` INT NULL,
+  `Nivel` INT NULL,
+  `idProfessor` INT NULL,
+  `idAluno` INT NULL,
+  PRIMARY KEY (`idTurma`),
+  INDEX `idProfessor_idx` (`idProfessor` ASC),
+  INDEX `idCursos_idx` (`idCursos` ASC),
+  INDEX `idAlunot_idx` (`idAluno` ASC),
+  CONSTRAINT `idProfessort`
+    FOREIGN KEY (`idProfessor`)
+    REFERENCES `forsoft`.`Professor` (`idProfessor`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `idCursost`
+    FOREIGN KEY (`idCursos`)
+    REFERENCES `forsoft`.`Cursos` (`idCursos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `idAlunot`
+    FOREIGN KEY (`idAluno`)
+    REFERENCES `forsoft`.`Aluno` (`idAluno`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Avaliação`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Avaliação` (
+  `idAvaliação` INT NOT NULL AUTO_INCREMENT,
+  `Nome` VARCHAR(45) NULL,
+  `Descricao` VARCHAR(45) NULL,
+  `Nota` INT NULL,
+  `Anexo` VARCHAR(300) NULL,
+  `idAluno` INT NULL,
+  `idTurma` INT NULL,
+  `Status` TINYINT NULL,
+  `DataEntrega` VARCHAR(45) NULL,
+  `DataCorrecao` VARCHAR(45) NULL,
+  PRIMARY KEY (`idAvaliação`),
+  INDEX `idAluno_idx` (`idAluno` ASC),
+  INDEX `idTurma_idx` (`idTurma` ASC),
+  CONSTRAINT `idAlunoav`
+    FOREIGN KEY (`idAluno`)
+    REFERENCES `forsoft`.`Aluno` (`idAluno`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `idTurmaav`
+    FOREIGN KEY (`idTurma`)
+    REFERENCES `forsoft`.`Turma` (`idTurma`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Exercicios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Exercicios` (
+  `idExercicios` INT NOT NULL AUTO_INCREMENT,
+  `idTurma` INT NULL,
+  `NivelExercicio` INT NULL,
+  `Tema` VARCHAR(300) NULL,
+  `Enunciado` VARCHAR(300) NULL,
+  PRIMARY KEY (`idExercicios`),
+  INDEX `idTurma_idx` (`idTurma` ASC),
+  CONSTRAINT `idTurmae`
+    FOREIGN KEY (`idTurma`)
+    REFERENCES `forsoft`.`Turma` (`idTurma`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Alternativas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Alternativas` (
+  `idAlternativas` INT NOT NULL AUTO_INCREMENT,
+  `Resposta` VARCHAR(45) NULL,
+  `idExercicios` INT NULL,
+  `Correta` TINYINT NULL,
+  PRIMARY KEY (`idAlternativas`),
+  INDEX `idExercicios_idx` (`idExercicios` ASC),
+  CONSTRAINT `idExerciciosa`
+    FOREIGN KEY (`idExercicios`)
+    REFERENCES `forsoft`.`Exercicios` (`idExercicios`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `forsoft`.`Historico`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `forsoft`.`Historico` (
+  `idHistorico` INT NOT NULL AUTO_INCREMENT,
+  `idAluno` INT NULL,
+  `idExercicios` INT NULL,
+  `Acerto` TINYINT NULL,
+  PRIMARY KEY (`idHistorico`),
+  INDEX `idAluno_idx` (`idAluno` ASC),
+  INDEX `idExercicios_idx` (`idExercicios` ASC),
+  CONSTRAINT `idAlunoh`
+    FOREIGN KEY (`idAluno`)
+    REFERENCES `forsoft`.`Aluno` (`idAluno`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `idExerciciosh`
+    FOREIGN KEY (`idExercicios`)
+    REFERENCES `forsoft`.`Exercicios` (`idExercicios`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
